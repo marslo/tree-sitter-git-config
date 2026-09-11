@@ -2,7 +2,6 @@
 
 const NEWLINE = /\r?\n/;
 const WHITE_SPACE = /[ \t\f\v]/;
-const ANYTHING = /[^\r\n]+/;
 
 module.exports = grammar({
   name: "git_config",
@@ -100,7 +99,27 @@ module.exports = grammar({
     // backslash (\); the backslash and the end-of-line characters are discarded."
     _line_continuation: ($) => seq("\\", NEWLINE),
 
-    comment: ($) => seq(/[#;]/, optional(ANYTHING)),
+    comment: ($) => seq(/[#;]/, repeat(choice($.hotkey, $._comment_text))),
+
+    // a hotkey annotation inside a comment: word chars glued to a []-wrapped key
+    // char, e.g. [m]arslo, [a]lia[s], pre[t]ty, [r]ef[l]og. a lone whole-word
+    // bracket like [find] / [log] is NOT a hotkey (falls to _comment_text) so it
+    // stays spellable. no lookaround (tree-sitter regexes are regular): the two
+    // branches require a word char adjacent (before or after) to a [..] group.
+    hotkey: ($) =>
+      token(
+        choice(
+          /[A-Za-z]+(\[[A-Za-z]+\][A-Za-z]*)+/,
+          /(\[[A-Za-z]+\][A-Za-z]+)+(\[[A-Za-z]+\])?/
+        )
+      ),
+
+    // any other comment body run (prose, punctuation, whole-word brackets).
+    // hidden: the parent `comment` node still carries it, kept spellable via the
+    // base `(comment) @spell` capture. lower lexer precedence so hotkey wins on
+    // an equal-length overlap.
+    _comment_text: ($) =>
+      token(prec(-1, choice(/[^\r\n\[\]]+/, /\[[A-Za-z]*\]/, /[\[\]]/))),
   },
 });
 

@@ -2,7 +2,17 @@
   {
     "type": "comment",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "hotkey",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "config",
@@ -173,6 +183,10 @@
   },
   {
     "type": "false",
+    "named": true
+  },
+  {
+    "type": "hotkey",
     "named": true
   },
   {

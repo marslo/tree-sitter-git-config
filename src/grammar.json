@@ -473,18 +473,62 @@
           "value": "[#;]"
         },
         {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "hotkey"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_comment_text"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "hotkey": {
+      "type": "TOKEN",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "PATTERN",
+            "value": "[A-Za-z]+(\\[[A-Za-z]+\\][A-Za-z]*)+"
+          },
+          {
+            "type": "PATTERN",
+            "value": "(\\[[A-Za-z]+\\][A-Za-z]+)+(\\[[A-Za-z]+\\])?"
+          }
+        ]
+      }
+    },
+    "_comment_text": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": -1,
+        "content": {
           "type": "CHOICE",
           "members": [
             {
               "type": "PATTERN",
-              "value": "[^\\r\\n]+"
+              "value": "[^\\r\\n\\[\\]]+"
             },
             {
-              "type": "BLANK"
+              "type": "PATTERN",
+              "value": "\\[[A-Za-z]*\\]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[\\[\\]]"
             }
           ]
         }
-      ]
+      }
     }
   },
   "extras": [

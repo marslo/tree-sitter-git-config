@@ -1,2 +1,10 @@
 /node_modules/
 /tmp/
+
+# build artifacts (Makefile: nvim / nvim-install / cli-install / all / install)
+/git_config.so
+/lib*.a
+/lib*.so
+/lib*.dylib
+/*.pc
+*.o
